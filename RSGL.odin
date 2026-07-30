@@ -20,6 +20,37 @@ when ODIN_OS == .Windows {
 MAX_BATCHES :: 2028
 MAX_VERTS :: 8192
 
+/* 
+******
+RSGL_debug
+*****
+*/
+
+/*! @brief the type of debug message */
+debugType :: enum(u8) {
+	error = 0, warning, info
+}
+
+/*! @brief error codes for known failure types */
+errorCode :: enum(u8){
+	noError = 0, /*!< no error */
+	errorBackend, 
+	errorQueryFail,
+	errorShader,
+	infoBackend,
+	infoShader,
+	warningBackend
+}
+
+/*! @brief data for debug messages */
+debugInfo :: struct {
+	type: debugType, /*!< the type of message */
+	code: errorCode, /*!< the code for the specific type of debug message */
+	msg: cstring /*!< string message */
+};
+
+debugFunc :: proc "c" (#by_ptr info : debugInfo)
+
 texture :: c.size_t
 framebuffer :: c.size_t
 
@@ -152,7 +183,7 @@ programInfo :: struct {
 BATCH :: struct {
     start, len : c.size_t, /* when batch starts and it's length */
     elmStart : c.size_t, elmCount : c.size_t, /* when element batch starts and it's length */
-    type : u32,
+    type : drawType, 
     tex : texture,
     lineWidth : c.float,
     mat : mat4
@@ -313,6 +344,14 @@ view :: struct #raw_union {
 
 @(default_calling_convention="c", link_prefix="RSGL_")
 foreign native {
+    /* 
+    ******
+    RSGL_debug
+    *****
+    */
+
+    setDebugCallback :: proc(func: debugFunc) -> debugFunc ---
+
     /*
     *********************
     RSGL matrix math

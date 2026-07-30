@@ -1,4 +1,3 @@
-#define RSGL_DEBUG
 #define RSGLDEF
 #define RSGL_IMPLEMENTATION
 #define RSGL_NO_GL_LOADER

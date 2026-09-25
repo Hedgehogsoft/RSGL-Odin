@@ -1,4 +1,4 @@
-package RSGL 
+package RSGL
 
 import "core:c"
 
@@ -9,18 +9,18 @@ when ODIN_OS == .Windows {
 		}
 } else when ODIN_OS == .Darwin {
     foreign import native {
-        "RSGL.a",
+        "lib/RSGL_osx.a",
     }
 } else when (ODIN_OS == .Linux || ODIN_OS == .FreeBSD || ODIN_OS == .OpenBSD) {
     foreign import native {
-        "RSGL.a",
+        "lib/RSGL_linux.a",
     }
 }
 
 MAX_BATCHES :: 2028
 MAX_VERTS :: 8192
 
-/* 
+/*
 ******
 RSGL_debug
 *****
@@ -34,7 +34,7 @@ debugType :: enum(u8) {
 /*! @brief error codes for known failure types */
 errorCode :: enum(u8){
 	noError = 0, /*!< no error */
-	errorBackend, 
+	errorBackend,
 	errorQueryFail,
 	errorShader,
 	infoBackend,
@@ -71,7 +71,7 @@ textureDataType :: enum {
 	textureDataFloat
 }
 
-textureFilter :: enum { 
+textureFilter :: enum {
 	filterNearest = 0,
 	filterLinear
 }
@@ -95,8 +95,8 @@ RSGL shapes
 
 rect :: struct { x, y, w, h : c.float }
 cube :: struct { x, y, z, w, h, l : c.float }
-vec2D :: [2]c.float 
-vec3D :: [3]c.float 
+vec2D :: [2]c.float
+vec3D :: [3]c.float
 
 /*
 the color stucture is in
@@ -145,7 +145,7 @@ projection3D :: struct {
 projection :: struct #raw_union {
 	type : projectionType,
 	p2D : projection2D,
-	p3D : projection3D 
+	p3D : projection3D
 }
 
 /*
@@ -165,9 +165,9 @@ shaderType :: enum {
 /* shader program and blob */
 programBlob :: struct {
 	vertex : cstring,
-	vertexLen : c.size_t, 
-	fragment : cstring, 
-	fragmentLen : c.size_t 
+	vertexLen : c.size_t,
+	fragment : cstring,
+	fragmentLen : c.size_t
 }
 
 programInfo :: struct {
@@ -183,7 +183,7 @@ programInfo :: struct {
 BATCH :: struct {
     start, len : c.size_t, /* when batch starts and it's length */
     elmStart : c.size_t, elmCount : c.size_t, /* when element batch starts and it's length */
-    type : drawType, 
+    type : drawType,
     tex : texture,
     lineWidth : c.float,
     mat : mat4
@@ -242,7 +242,7 @@ renderState :: struct {
 renderPass :: struct {
 	program : ^programInfo,
 	mat : ^c.float,
-	buffers : ^renderBuffers, 
+	buffers : ^renderBuffers,
 	framebuffer : framebuffer
 }
 
@@ -333,18 +333,18 @@ view3D :: struct {
 	type : viewType,
 	pos : vec3D,
 	target : vec3D,
-    up : vec3D 
+    up : vec3D
 }
 
 view :: struct #raw_union {
 	type : viewType,
 	view2D : view2D,
 	view3D : view3D
-} 
+}
 
 @(default_calling_convention="c", link_prefix="RSGL_")
 foreign native {
-    /* 
+    /*
     ******
     RSGL_debug
     *****
@@ -524,5 +524,5 @@ foreign native {
     *******
     */
 
-    view_getMatrix :: proc(view : ^view) -> mat4 --- 
+    view_getMatrix :: proc(view : ^view) -> mat4 ---
 }
